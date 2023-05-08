@@ -12,10 +12,12 @@ const responses = {};
 
 router.post('/api/chatgpt', async (req, res) => {
     try {
-        res.send("Esperando respuesta de chatgpt...")
+        let message = { message: 'Esperando respuesta de chatgpt' }
+        res.json(message);
+        //res.send("Esperando respuesta de chatgpt...")
         let userId = req.body.userId;
         let question = req.body.question;
-        responses[userId] = { "completion": null, "state": 0 }
+        responses[userId] = { completion: null, state: 0 }
         const completion = await openai.createCompletion({
             model: "text-davinci-003",
             prompt: question,
@@ -25,7 +27,7 @@ router.post('/api/chatgpt', async (req, res) => {
             frequency_penalty: 0.0,
             presence_penalty: 0.0,
         });
-        responses[userId] = { completion, "state": 1 };
+        responses[userId] = { completion, state: 1 };
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al consumir la API de OPENAI');
@@ -36,14 +38,22 @@ router.get('/api/getResponse/:userId', async (req, res) => {
     try {
         let userId = req.params.userId;
         let estado = responses[userId];
-        if (!userId || !responses[userId]) {
-            res.send('Todavia no has realizado ninguna pregunta')
-        } else if (estado.state != 1) {
-            res.send('Trabajando en tu respuesta')
+        let message = { userId: userId, estado: estado, message: null }
+
+        if (!message.userId || !message.estado) {
+            message = { userId, estado, message: 'Todavia no has realizado ninguna pregunta' }
+            res.json(message);
+            //res.send('Todavia no has realizado ninguna pregunta')
+        } else if (message.estado.state != 1) {
+            message = { userId, estado: estado.state, message: 'Trabajando en tu respuesta' }
+            res.json(message);
+            //res.send('Trabajando en tu respuesta')
         }
         else {
-            let response = responses[userId];
-            res.send(response.completion.data.choices[0].text);
+            //let response = responses[userId];
+            message = { userId, estado: estado.state, message: estado.completion.data.choices[0].text }
+            res.json(message);
+            //res.send(response.completion.data.choices[0].text);
             //responses[userId] = null;
             delete responses[userId];
         }
