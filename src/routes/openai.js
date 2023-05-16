@@ -2,6 +2,7 @@ const { Router, response } = require("express");
 const router = Router();
 
 const config = require('../config');
+
 const { Configuration, OpenAIApi } = require("openai");
 const configuration = new Configuration({
     apiKey: config.OPENAI_API_KEY,
@@ -12,7 +13,7 @@ const responses = {};
 
 router.post('/api/chatgpt', async (req, res) => {
     try {
-        let message = { message: 'Esperando respuesta de chatgpt' }
+        let message = { message: 'Esperando respuesta de chat je pe te' }
         res.json(message);
         //res.send("Esperando respuesta de chatgpt...")
         let userId = req.body.userId;
@@ -30,7 +31,9 @@ router.post('/api/chatgpt', async (req, res) => {
         responses[userId] = { completion, state: 1 };
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error al consumir la API de OPENAI');
+        let message = { message: 'Error al consumir la API de OPENAI' }
+        res.status(500).json(message);
+        //res.status(500).send('Error al consumir la API de OPENAI');
     }
 });
 
@@ -59,7 +62,9 @@ router.get('/api/getResponse/:userId', async (req, res) => {
         }
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error al consumir la API de OPENAI');
+        let message = { message: 'Error al consumir la API de OPENAI' }
+        res.status(500).json(message);
+        //res.status(500).send('Error al consumir la API de OPENAI');
     }
 
 });
