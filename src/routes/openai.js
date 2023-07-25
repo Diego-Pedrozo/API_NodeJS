@@ -13,7 +13,7 @@ const responses = {};
 
 router.post('/api/chatgpt', async (req, res) => {
     try {
-        let message = { message: 'Esperando respuesta de chat je pe te' }
+        let message = { message: 'Esperando' }
         res.json(message);
         //res.send("Esperando respuesta de chatgpt...")
         let userId = req.body.userId;
@@ -48,7 +48,7 @@ router.get('/api/getResponse/:userId', async (req, res) => {
             res.json(message);
             //res.send('Todavia no has realizado ninguna pregunta')
         } else if (message.estado.state != 1) {
-            message = { userId, estado: estado.state, message: 'Trabajando en tu respuesta' }
+            message = { userId, estado: estado.state, message: 'Espera' }
             res.json(message);
             //res.send('Trabajando en tu respuesta')
         }
