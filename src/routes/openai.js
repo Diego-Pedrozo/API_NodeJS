@@ -33,19 +33,13 @@ router.post('/api/chatgpt', async (req, res) => {
         let userId = req.body.userId;
         let question = req.body.question;
         responses[userId] = { completion: null, state: 0 };
-        // let message = { message: 'Esperando' }
-        // res.json(message);
+        let message = { message: 'Esperando' }
+        res.json(message);
         await openAIRequest(userId, question);
     } catch (error) {
         console.error(error.response.data);
         let userId = req.body.userId;
-        responses[userId] = { completion: 'Error al consumir la API de OPENAI', state: 2 };
-        //delete responses[userId];
-        let message = {
-            message: 'Error al consumir la API de OPENAI',
-            error: error.response.data.error.message
-        }
-        res.status(error.response.status).json(message);
+        responses[userId] = { completion: 'Error al consumir la API de OPENAI', state: 2, error: error.response.data.error.message};
     }
 });
 
@@ -104,7 +98,7 @@ router.get('/api/getResponse/:userId', async (req, res) => {
         }
         else if (message.estado.state == 2){
             //let response = responses[userId];
-            message = { userId, estado: estado.state, message: estado.completion }
+            message = { userId, estado: estado.state, message: estado.completion, error: estado.error }
             res.json(message);
             //res.send(response.completion.data.choices[0].text);
             //responses[userId] = null;
